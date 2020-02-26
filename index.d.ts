@@ -17,6 +17,8 @@
  * The class constructor function is the exported object from the file
  */
 declare module 'autonumeric' {
+    export = AutoNumeric;
+
     class AutoNumeric {
         constructor(
             elementOrSelector: string | HTMLInputElement | HTMLElement,
