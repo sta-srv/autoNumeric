@@ -16,314 +16,310 @@
 /**
  * The class constructor function is the exported object from the file
  */
-export = AutoNumeric;
+declare module 'autonumeric' {
+    class AutoNumeric {
+        constructor(
+            elementOrSelector: string | HTMLInputElement | HTMLElement,
+            initialValue?: string | number,
+            options?: Options | string
+        );
 
-declare class AutoNumeric {
-    constructor(
-        elementOrSelector: string | HTMLInputElement | HTMLElement,
-        initialValue: string | number = null,
-        options: Options | string = null
-    );
+        static multiple(
+            elementsOrSelector:
+                | string
+                | HTMLElement[]
+                | { rootElement: HTMLElement; exclude?: HTMLInputElement[] },
+            initialValue?: number | Array<number | null>,
+            options?: Options | Options[]
+        ): AutoNumeric[];
 
-    static multiple(
-        elementsOrSelector:
-            | string
-            | HTMLElement[]
-            | { rootElement: HTMLElement; exclude?: HTMLInputElement[] },
-        initialValue: number | Array<number | null> = null,
-        options: Options | Options[] = null
-    ): AutoNumeric[];
+        /**
+         * Return true in the settings are valid
+         */
+        static areSettingsValid(options: Options): boolean;
 
-    /**
-     * Return true in the settings are valid
-     */
-    static areSettingsValid(options: Options): boolean;
+        /**
+         * Format the given number with the given options. This returns the formatted value as a string.
+         */
+        static format(value: number | string | HTMLElement, options: Options): string;
 
-    /**
-     * Format the given number with the given options. This returns the formatted value as a string.
-     */
-    static format(value: number | string | HTMLElement, options: Options): string;
+        /**
+         * Format the domElement value with the given options and returns the formatted value as a string.
+         */
+        static formatAndSet(domElement: HTMLElement, options: Options): string;
 
-    /**
-     * Format the domElement value with the given options and returns the formatted value as a string.
-     */
-    static formatAndSet(domElement: HTMLElement, options: Options): string;
+        /**
+         * Return the AutoNumeric object that manages the given DOM element
+         */
+        static getAutoNumericElement(domElement: HTMLElement): Input;
 
-    /**
-     * Return the AutoNumeric object that manages the given DOM element
-     */
-    static getAutoNumericElement(domElement: HTMLElement): Input;
+        /**
+         * Return the default autoNumeric settings
+         */
+        static getDefaultConfig(): Options;
 
-    /**
-     * Return the default autoNumeric settings
-     */
-    static getDefaultConfig(): Options;
+        /**
+         * Return all the predefined options in one object
+         */
+        static getPredefinedOptions(): PredefinedOptions;
 
-    /**
-     * Return all the predefined options in one object
-     */
-    static getPredefinedOptions(): PredefinedOptions;
+        /**
+         * Return true if the given DOM element has an AutoNumeric object that manages it.
+         */
+        static isManagedByAutoNumeric(domElement: HTMLElement): boolean;
 
-    /**
-     * Return true if the given DOM element has an AutoNumeric object that manages it.
-     */
-    static isManagedByAutoNumeric(domElement: HTMLElement): boolean;
+        /**
+         * Unformat and localize the given formatted string with the given options.
+         */
+        static localize(value: string | HTMLElement, options: Options): string;
 
-    /**
-     * Unformat and localize the given formatted string with the given options.
-     */
-    static localize(value: string | HTMLElement, options: Options): string;
+        static localizeAndSet(domElement: HTMLElement, options: Options): string;
 
-    static localizeAndSet(domElement: HTMLElement, options: Options): string;
+        static mergeOptions(...options: Options[]): Options;
 
-    static mergeOptions(...options: Options[]): Options;
+        static reformatAndSet(referenceToTheDomElement: HTMLElement): void;
 
-    static reformatAndSet(referenceToTheDomElement: HTMLElement): void;
+        static test(domElement: HTMLElement): boolean;
 
-    static test(domElement: HTMLElement): boolean;
+        static validate(options: Options): boolean;
 
-    static validate(options: Options): boolean;
+        static version(): string;
 
-    static version(): string;
+        /**
+         * Set the given element value, and format it immediately.
+         * Additionally, this `set()` method can accept options that will be merged into the current AutoNumeric element, taking precedence over any previous settings.
+         *
+         * @example anElement.set('12345.67') // Formats the value
+         * @example anElement.set(12345.67) // Formats the value
+         * @example anElement.set(12345.67, { decimalCharacter : ',' }) // Update the settings and formats the value in one go
+         * @example anElement.northAmerican().set('$12,345.67') // Set an already formatted value (this does not _exactly_ respect the currency symbol/negative placements, but only remove all non-numbers characters, according to the ones given in the settings)
+         * @example anElement.set(null) // Set the rawValue and element value to `null`
+         *
+         * @param {number|string|null} newValue The value must be a Number, a numeric string or `null` (if `emptyInputBehavior` is set to `'null'`)
+         * @param {object} options A settings object that will override the current settings. Note: the update is done only if the `newValue` is defined.
+         * @param {boolean} saveChangeToHistory If set to `true`, then the change is recorded in the history table
+         * @returns {AutoNumeric}
+         * @throws
+         */
+        set(
+            newValue: number | string | null,
+            options?: Options,
+            saveChangeToHistory?: boolean
+        ): void;
 
-    /**
-     * Set the given element value, and format it immediately.
-     * Additionally, this `set()` method can accept options that will be merged into the current AutoNumeric element, taking precedence over any previous settings.
-     *
-     * @example anElement.set('12345.67') // Formats the value
-     * @example anElement.set(12345.67) // Formats the value
-     * @example anElement.set(12345.67, { decimalCharacter : ',' }) // Update the settings and formats the value in one go
-     * @example anElement.northAmerican().set('$12,345.67') // Set an already formatted value (this does not _exactly_ respect the currency symbol/negative placements, but only remove all non-numbers characters, according to the ones given in the settings)
-     * @example anElement.set(null) // Set the rawValue and element value to `null`
-     *
-     * @param {number|string|null} newValue The value must be a Number, a numeric string or `null` (if `emptyInputBehavior` is set to `'null'`)
-     * @param {object} options A settings object that will override the current settings. Note: the update is done only if the `newValue` is defined.
-     * @param {boolean} saveChangeToHistory If set to `true`, then the change is recorded in the history table
-     * @returns {AutoNumeric}
-     * @throws
-     */
-    set(
-        newValue: number | string | null,
-        options?: Options,
-        saveChangeToHistory?: boolean
-    ): void;
+        /**
+         * Set the given value directly as the DOM element value, without formatting it beforehand.
+         * You can also set the value and update the setting in one go (the value will again not be formatted immediately).
+         */
+        setUnformatted(value: number, options?: Options): void;
 
-    /**
-     * Set the given value directly as the DOM element value, without formatting it beforehand.
-     * You can also set the value and update the setting in one go (the value will again not be formatted immediately).
-     */
-    setUnformatted(value: number, options?: Options): void;
+        /**
+         * The get() function is deprecated and should not be used. Omitted from TS def for that reason.
+         * get(callback?: (value: string, instance: AutoNumeric) => void): string;
+         */
 
-    /**
-     * The get() function is deprecated and should not be used. Omitted from TS def for that reason.
-     * get(callback?: (value: string, instance: AutoNumeric) => void): string;
-     */
+        /**
+         * Return the current formatted value of the AutoNumeric element as a string.
+         */
+        getFormatted(
+            callback?: (value: string, instance: AutoNumeric) => void
+        ): string;
 
-    /**
-     * Return the current formatted value of the AutoNumeric element as a string.
-     */
-    getFormatted(
-        callback?: (value: string, instance: AutoNumeric) => void
-    ): string;
+        /**
+         * Return the element unformatted value as a real JavaScript number.
+         */
+        getNumber(
+            callback?: (value: number | null, instance: AutoNumeric) => void
+        ): number | null;
 
-    /**
-     * Return the element unformatted value as a real JavaScript number.
-     */
-    getNumber(
-        callback?: (value: number | null, instance: AutoNumeric) => void = null
-    ): number | null;
+        /**
+         * Return the unformatted value as a string.
+         * This can also return `null` if `rawValue` is null.
+         */
+        getNumericString(
+            callback?: (value: string | null, instance: AutoNumeric) => void
+        ): string | null;
 
-    /**
-     * Return the unformatted value as a string.
-     * This can also return `null` if `rawValue` is null.
-     */
-    getNumericString(
-        callback?: (value: string | null, instance: AutoNumeric) => void = null
-    ): string | null;
+        /**
+         * Returns the unformatted value, but following the `outputFormat` setting, which means the output can either be:
+         *
+         * - a string (that could or could not represent a number, ie. "12345,67-"), or
+         * - a plain number (if the setting 'number' is used).
+         *
+         * By default the returned values are an ISO numeric string "1234.56" or "-1234.56" where the decimal character is a period.
+         * Check the `outputFormat` option definition for more details.
+         */
+        getLocalized(forcedOutputFormat?: OutputFormatOption, callback?: (value: string) => void): string;
+        getLocalized(callback: (value: string) => void): string;
 
-    /**
-     * Returns the unformatted value, but following the `outputFormat` setting, which means the output can either be:
-     *
-     * - a string (that could or could not represent a number, ie. "12345,67-"), or
-     * - a plain number (if the setting 'number' is used).
-     *
-     * By default the returned values are an ISO numeric string "1234.56" or "-1234.56" where the decimal character is a period.
-     * Check the `outputFormat` option definition for more details.
-     */
-    getLocalized(forcedOutputFormat?: OutputFormatOption, callback?: (value: string) => void): string;
-    getLocalized(callback: (value: string) => void): string;
+        reformat(): void;
 
-    reformat(): void;
+        unformat(): void;
 
-    unformat(): void;
+        unformatLocalized(forcedOutputFormat?: OutputFormatOption): void;
 
-    unformatLocalized(forcedOutputFormat?: OutputFormatOption): void;
+        isPristine(): boolean;
 
-    isPristine(): boolean;
+        select(): void;
 
-    select(): void;
+        selectNumber(): void;
 
-    selectNumber(): void;
+        selectInteger(): void;
 
-    selectInteger(): void;
+        selectDecimal(): void;
 
-    selectDecimal(): void;
+        clear(reset?: boolean): void;
 
-    clear(reset?: boolean): void;
+        /**
+         * Updates the AutoNumeric settings, and immediately format the element accordingly.
+         */
+        update(...options: Options[]): Input;
 
-    /**
-     * Updates the AutoNumeric settings, and immediately format the element accordingly.
-     */
-    update(...options: Options[]): Input;
+        /**
+         * Remove the autoNumeric data and event listeners from the element, but keep the element content intact.
+         * This also clears the value from sessionStorage (or cookie, depending on browser supports).
+         * Note: this does not remove the formatting.
+         */
+        remove(): void;
 
-    /**
-     * Remove the autoNumeric data and event listeners from the element, but keep the element content intact.
-     * This also clears the value from sessionStorage (or cookie, depending on browser supports).
-     * Note: this does not remove the formatting.
-     */
-    remove(): void;
+        /**
+         * Remove the autoNumeric data and event listeners from the element, and reset its value to the empty string ''.
+         * This also clears the value from sessionStorage (or cookie, depending on browser supports).
+         */
+        wipe(): void;
 
-    /**
-     * Remove the autoNumeric data and event listeners from the element, and reset its value to the empty string ''.
-     * This also clears the value from sessionStorage (or cookie, depending on browser supports).
-     */
-    wipe(): void;
+        /**
+         * Remove the autoNumeric data and event listeners from the element, and delete the DOM element altogether
+         */
+        nuke(): void;
 
-    /**
-     * Remove the autoNumeric data and event listeners from the element, and delete the DOM element altogether
-     */
-    nuke(): void;
+        /**
+         * Return the DOM element reference of the autoNumeric-managed element
+         */
+        node(): HTMLInputElement;
 
-    /**
-     * Return the DOM element reference of the autoNumeric-managed element
-     */
-    node(): HTMLInputElement;
+        parent(): HTMLElement;
 
-    parent(): HTMLElement;
+        detach(): void;
 
-    detach(): void;
+        attach(otherAnElement: HTMLElement, reFormat?: boolean): void;
 
-    attach(otherAnElement: HTMLElement, reFormat?: boolean): void;
+        init(domeElement2: HTMLElement): Input;
 
-    init(domeElement2: HTMLElement): Input;
+        form(forcedSearch?: boolean): HTMLFormElement;
 
-    form(forcedSearch?: boolean): HTMLFormElement;
+        formNumericString(): string;
 
-    formNumericString(): string;
+        formFormatted(): string;
 
-    formFormatted(): string;
+        formLocalized(forcedOutputFormat?: PredefinedLanguages): string;
 
-    formLocalized(forcedOutputFormat?: PredefinedLanguages): string;
+        formArrayNumericString(): HTMLInputElement[];
 
-    formArrayNumericString(): HTMLInputElement[];
+        formArrayFormatted(): HTMLInputElement[];
 
-    formArrayFormatted(): HTMLInputElement[];
+        formArrayLocalized(): HTMLInputElement[];
 
-    formArrayLocalized(): HTMLInputElement[];
+        formJsonNumericString(): string;
 
-    formJsonNumericString(): string;
+        formJsonFormatted(): string;
 
-    formJsonFormatted(): string;
+        formJsonLocalized(): string;
 
-    formJsonLocalized(): string;
+        formUnformat(): void;
 
-    formUnformat(): void;
+        formReformat(): void;
 
-    formReformat(): void;
+        formSubmitArrayNumericString(callback: Function): Input;
 
-    formSubmitArrayNumericString(callback: Function): Input;
+        formSubmitArrayFormatted(callback: Function): Input;
 
-    formSubmitArrayFormatted(callback: Function): Input;
+        formSubmitArrayLocalized(callback: Function): Input;
 
-    formSubmitArrayLocalized(callback: Function): Input;
+        formSubmitJsonNumericString(callback: Function): Input;
 
-    formSubmitJsonNumericString(callback: Function): Input;
+        formSubmitJsonFormatted(callback: Function): Input;
 
-    formSubmitJsonFormatted(callback: Function): Input;
+        formSubmitJsonLocalized(callback: Function): Input;
+    }
 
-    formSubmitJsonLocalized(callback: Function): Input;
-}
-
-/**
- * Exposes the types used in that definitions file
- */
-declare namespace AutoNumeric {
-    export type OutputFormatOption =
-        | "string"
-        | "number"
-        | "."
-        | "-."
-        | ","
-        | "-,"
-        | ".-"
-        | ",-"
+    type OutputFormatOption =
+        | 'string'
+        | 'number'
+        | '.'
+        | '-.'
+        | ','
+        | '-,'
+        | '.-'
+        | ',-'
         | null;
 
-    export type CaretPositionOption =
-        | "start"
-        | "end"
-        | "decimalLeft"
-        | "decimalRight"
-        | "doNoForceCaretPosition";
+    type CaretPositionOption =
+        | 'start'
+        | 'end'
+        | 'decimalLeft'
+        | 'decimalRight'
+        | 'doNoForceCaretPosition';
 
-    export type CurrencySymbolPlacementOption = "p" | "s";
+    type CurrencySymbolPlacementOption = 'p' | 's';
 
-    export type EmptyInputBehaviorOption =
-        | "null"
-        | "focus"
-        | "press"
-        | "always"
-        | "min"
-        | "max"
-        | "zero"
+    type EmptyInputBehaviorOption =
+        | 'null'
+        | 'focus'
+        | 'press'
+        | 'always'
+        | 'min'
+        | 'max'
+        | 'zero'
         | number
         | string /* representing a number */;
 
-    export type LeadingZeroOption = "allow" | "deny" | "keep";
 
-    export type NegativePositiveSignPlacementOption =
-        | "p"
-        | "s"
-        | "l"
-        | "r"
+    type LeadingZeroOption = 'allow' | 'deny' | 'keep'
+
+    type NegativePositiveSignPlacementOption =
+        | 'p'
+        | 's'
+        | 'l'
+        | 'r'
         | null;
 
-    export type OnInvalidPasteOption =
-        | "error"
-        | "ignore"
-        | "clamp"
-        | "truncate"
-        | "replace";
+    type OnInvalidPasteOption =
+        | 'error'
+        | 'ignore'
+        | 'clamp'
+        | 'truncate'
+        | 'replace';
 
-    export type OverrideMinMaxLimitsOption =
-        | "ceiling"
-        | "floor"
-        | "ignore"
+    type OverrideMinMaxLimitsOption =
+        | 'ceiling'
+        | 'floor'
+        | 'ignore'
         | null;
 
-    export type RoundingMethodOption =
-        | "S"
-        | "A"
-        | "s"
-        | "a"
-        | "B"
-        | "U"
-        | "D"
-        | "C"
-        | "F"
-        | "N05"
-        | "CHF"
-        | "U05"
-        | "D05";
+    type RoundingMethodOption =
+        | 'S'
+        | 'A'
+        | 's'
+        | 'a'
+        | 'B'
+        | 'U'
+        | 'D'
+        | 'C'
+        | 'F'
+        | 'N05'
+        | 'CHF'
+        | 'U05'
+        | 'D05';
 
-    export type SerializeSpacesOption = "+" | "%20";
+    type SerializeSpacesOption = '+' | '%20';
 
-    export interface Options {
+    interface Options {
         /**
          * Allow padding the decimal places with zeros.
          * @default true
          */
-        allowDecimalPadding?: boolean | "floats";
+        allowDecimalPadding?: boolean | 'floats';
 
         /**
          * Determine where should be positioned the caret on focus
@@ -500,7 +496,7 @@ declare namespace AutoNumeric {
 
         unformatOnSubmit?: boolean;
 
-        wheelStep?: number | "progressive";
+        wheelStep?: number | 'progressive';
     }
 
     interface PredefinedLanguages {
@@ -516,4 +512,6 @@ declare namespace AutoNumeric {
     }
 
     type PredefinedOptions = Partial<Options> & PredefinedLanguages;
+
+    type Input<E extends HTMLElement = HTMLInputElement> = E;
 }
